@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   # JP Note: this box came from: https://cloud-images.ubuntu.com/vagrant/
   # JP Note: I first downloaded the image to my home folder
-  config.vm.box = "~/wily-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box = "../wily-server-cloudimg-amd64-vagrant-disk1.box"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -26,13 +26,13 @@ Vagrant.configure(2) do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
 
   # Set Windows rdp server port to 7000
-  config.vm.network "forwarded_port", guest: 3389, host: 7000
+  config.vm.network "forwarded_port", guest: 3389, host: 7001
   
   # Set apache2 web server port to 8000
-  config.vm.network "forwarded_port", guest: 80, host: 8000
+  #config.vm.network "forwarded_port", guest: 80, host: 8000
 
   # Set Tomcat web server prot to 9000
-  config.vm.network "forwarded_port", guest: 8080, host: 9000
+  #config.vm.network "forwarded_port", guest: 8080, host: 9000
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -217,24 +217,19 @@ Vagrant.configure(2) do |config|
 #    echo '--'
 
 
-    echo '-----------------------------------------------------------------------------------------------'
-    echo '---- INSTALLING GUI ENVIRONMENT'
-    echo '---- BRING UP GUI ENVIRONMENT USING: vagrant rdp'
-    echo '---- OR LAUNCH SEPARATE REMOTE DESKTOP FROM WINDOWS OR OS X USING: localhost:7000'
-    echo '-----------------------------------------------------------------------------------------------'
+#    echo '-----------------------------------------------------------------------------------------------'
+#    echo '---- INSTALLING GUI ENVIRONMENT'
+#    echo '---- BRING UP GUI ENVIRONMENT USING: vagrant rdp'
+#    echo '---- OR LAUNCH SEPARATE REMOTE DESKTOP FROM WINDOWS OR OS X USING: localhost:7000'
+#    echo '-----------------------------------------------------------------------------------------------'
 
     echo '---- INSTALLING REMOTE DESKTOP AND MATE GUI'
     apt-get install -y xrdp
     sed -i 's/.*\/etc\/X11\/Xsession/mate-session/' /etc/xrdp/startwm.sh
 
-    apt-get install -y mate-desktop-environment-core
-    apt-get install -y mate-themes ubuntu-mate-wallpapers-utopic ubuntu-mate-wallpapers-vivid
-    apt-get install -y fonts-inconsolata fonts-dejavu fonts-droid fonts-liberation fonts-ubuntu-font-family-console
-    apt-get install -y xterm vim-gnome gdebi-core pluma 
-    apt-get install -y firefox
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    gdebi -n google-chrome-stable_current_amd64.deb
-    rm -f google-chrome-stable_current_amd64.deb
+    apt-get install -y mate-desktop-environment
+    apt-get install -y mate-session-manager
+    
     echo '--'
 
     echo '---- INSTALLING PYTHON3 TK GRAPHICS LIBRARY'
@@ -257,9 +252,23 @@ Vagrant.configure(2) do |config|
     echo 'RUN AS: ~/sts-bundle/sts-3.7.2.RELEASE/STS'
     echo '--'
 
-    echo '---- INSTALLING NETBEANS IDE (as of 20160118 installling older version 8.0.2)'
-    apt-get install -y netbeans
-    echo '--'
+#    echo '---- INSTALLING NETBEANS IDE (as of 20160118 installling older version 8.0.2)'
+#    apt-get install -y netbeans
+#    echo '--'
+
+    echo '---- INSTALLING EXTRAS'
+    apt-get install guake
+    apt-get install screen
+    sudo apt-get install libxss1 libappindicator1 libindicator7
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo dpkg -i google-chrome*.deb
+    rm -f google-chrome-stable_current_amd64.deb
+    apt-get install -y firefox
+    echo '-----'
+
+    echo '---- INSTALLING ALL DEPENDENCIES'
+    apt-get -f install
+    echo '----'
 
     echo 'Ending shell script at:'
     date
